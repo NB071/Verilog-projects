@@ -50,41 +50,27 @@ module DigitalClock(
         end
     end
 
-    // Seconds counter
+     // Seconds, minutes, and hours counters
     always @(posedge clk or posedge reset) begin
         if (reset) begin
             seconds <= 0;
+            minutes <= 0;
+            hours <= 0;
         end else if (one_sec_pulse) begin
             if (seconds == 59) begin
                 seconds <= 0;
+                if (minutes == 59) begin
+                    minutes <= 0;
+                    if (hours == 23) begin
+                        hours <= 0;
+                    end else begin
+                        hours <= hours + 1;
+                    end
+                end else begin
+                    minutes <= minutes + 1;
+                end
             end else begin
                 seconds <= seconds + 1;
-            end
-        end
-    end
-
-    // Minutes counter
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin   
-            minutes <= 0;
-        end else if (one_sec_pulse && seconds == 59) begin
-            if (minutes == 59) begin
-                minutes <= 0;
-            end else begin
-                minutes <= minutes + 1;
-            end
-        end
-    end
-
-    // Hours counter
-    always @(posedge clk or posedge reset) begin 
-        if (reset) begin
-            hours <= 0;
-        end else if (one_sec_pulse && seconds == 59 && minutes == 59) begin
-            if (hours == 23) begin
-                hours <= 0;
-            end else begin
-                hours <= hours + 1;
             end
         end
     end
