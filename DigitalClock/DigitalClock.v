@@ -12,11 +12,14 @@ module DigitalClock(
     output reg [3:0] hour_tens                          // Hrs (10s place)
 );
 
-    
+    // Dynamic ONE_SEC_COUNT (computed once)
+    reg [31:0] one_sec_count;
+    initial begin
+        one_sec_count = clock_frequency - 1;
+    end
 
     // Registers
     reg [31:0] clk_count = 0;
-    reg [31:0] one_sec_count = 0;                       // Dynamic ONE_SEC_COUNT
     reg one_sec_pulse = 0;
 
     // Counters for seconds, minutes, and hours
