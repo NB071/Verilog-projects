@@ -1,16 +1,18 @@
+`timescale 1ns / 1ps
+
 module DigitalClock(
-    input clk,                                      // Input FPGA clock
-    input reset,                                    // Reset signal
-    output [3:0] sec_ones,                          // Sec (1s place)
-    output [3:0] sec_tens,                          // Sec (10s place)
-    output [3:0] min_ones,                          // Min (1s place)
-    output [3:0] min_tens,                          // Min (10s place)
-    output [3:0] hour_ones,                         // Hrs (1s place)
-    output [3:0] hour_tens                          // Hrs (10s place)
+    input clk,                                          // Input clock
+    input reset,                                        // Reset signal
+    output reg [3:0] sec_ones,                          // Sec (1s place)
+    output reg [3:0] sec_tens,                          // Sec (10s place)
+    output reg [3:0] min_ones,                          // Min (1s place)
+    output reg [3:0] min_tens,                          // Min (10s place)
+    output reg [3:0] hour_ones,                         // Hrs (1s place)
+    output reg [3:0] hour_tens                          // Hrs (10s place)
 );
 
-    parameter CLOCK_FREQ = 50_000_000;              // Assume 50 MHz clock
-    parameter ONE_SEC_COUNT = CLOCK_FREQ - 1;       // Total cycles needed for 1 second (50,000,000 - 1)
+    parameter CLOCK_FREQ = 1_200_000;                   // 1.2MHz clock
+    parameter ONE_SEC_COUNT = CLOCK_FREQ - 1;           // Total cycles needed for 1 second (50,000,000 - 1)
 
     // Registers
     reg [31:0] clk_count = 0;
@@ -75,13 +77,15 @@ module DigitalClock(
     end
 
      // Output decoding for display
-    assign sec_ones = seconds % 10;
-    assign sec_tens = seconds / 10;
+    always @(*) begin
+        sec_ones = seconds % 10;
+        sec_tens = seconds / 10;
 
-    assign min_ones = minutes % 10;
-    assign min_tens = minutes / 10;
+        min_ones = minutes % 10;
+        min_tens = minutes / 10;
 
-    assign hour_ones = hours % 10;
-    assign hour_tens = hours / 10;
+        hour_ones = hours % 10;
+        hour_tens = hours / 10;
+    end
 
 endmodule
