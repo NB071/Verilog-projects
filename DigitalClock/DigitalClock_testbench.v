@@ -6,11 +6,13 @@ module clock_testbench;
     wire [3:0] sec_ones, sec_tens;          // Seconds (1s and 10s place)
     wire [3:0] min_ones, min_tens;          // Minutes (1s and 10s place)
     wire [3:0] hour_ones, hour_tens;        // Hours (1s and 10s place)
+    reg [31:0] clock_frequency = 1_200_000; // Dynamic clock frequency (e.g., 1.2 MHz)
 
     // Instantiate the DigitalClock module
     DigitalClock uut (
         .clk(clk),
         .reset(reset),
+        .clock_frequency(clock_frequency), 
         .sec_ones(sec_ones),
         .sec_tens(sec_tens),
         .min_ones(min_ones),
@@ -19,8 +21,8 @@ module clock_testbench;
         .hour_tens(hour_tens)
     );
 
-    // Generate a 5 MHz clock signal (200 ns period)
-    always #100 clk = ~clk;             // Toggle every 100 ns for 5 MHz clock
+    // Generate clock signal
+    always #100 clk = ~clk;                 // Toggle every 100 ns for 1.2 MHz clock
 
     initial begin
         // Test start
@@ -29,7 +31,7 @@ module clock_testbench;
         // Apply reset
         reset = 1;
         $display("Applying reset at time: %0t ns", $time);
-        #500; 
+        #200; 
         reset = 0;
         $display("Releasing reset at time: %0t ns", $time);
 
