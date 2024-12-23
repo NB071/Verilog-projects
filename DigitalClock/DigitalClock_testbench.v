@@ -22,7 +22,7 @@ module clock_testbench;
     );
 
     // Generate clock signal
-    always #100 clk = ~clk;                 // Toggle every 100 ns for 1.2 MHz clock
+    always #416 clk = ~clk;                 // Toggle every 416 ns for 1.2 MHz clock
 
     initial begin
         // Test start
