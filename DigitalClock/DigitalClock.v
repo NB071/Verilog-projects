@@ -65,7 +65,7 @@ module DigitalClock(
     always @(posedge clk or posedge reset) begin 
         if (reset) begin
             hours <= 0;
-        end else if (one_sec_pulse && second == 59 && minutes == 59) begin
+        end else if (one_sec_pulse && seconds == 59 && minutes == 59) begin
             if (hours == 23) begin
                 hours <= 0;
             end else begin
