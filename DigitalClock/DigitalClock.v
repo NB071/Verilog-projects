@@ -41,20 +41,19 @@ module DigitalClock(
     output reg [3:0] hour_tens                          // Hrs (10s place)
 );
 
-     // Parameters defining the ranges for counters
+    // Parameters defining the ranges for counters
     parameter MAX_SECONDS = 59;                         // Maximum value for seconds counter
     parameter MAX_MINUTES = 59;                         // Maximum value for minutes counter
     parameter MAX_HOURS = 23;                           // Maximum value for hours counter
 
     // Internal registers for clock counting and timekeeping
     reg [31:0] clk_count = 0;                           // Tracks clock cycles to generate 1-second pulse
-    reg one_sec_pulse = 0;                              // Pulses high every 1 second
     reg [31:0] one_sec_count = 0;                       // Number of clock cycles for 1 second
 
     // Counters for seconds, minutes, and hours
-    reg [5:0] seconds = 0;  // Range: 0-59
-    reg [5:0] minutes = 0;  // Range: 0-59
-    reg [4:0] hours = 0;    // Range: 0-23
+    reg [5:0] seconds = 0;                              // Range: 0-59
+    reg [5:0] minutes = 0;                              // Range: 0-59
+    reg [4:0] hours = 0;                                // Range: 0-23
 
     // One-second pulse signal
     wire one_sec_pulse;
@@ -73,21 +72,6 @@ module DigitalClock(
     always @(posedge reset or posedge clk) begin
         if (reset) begin
             one_sec_count <= clock_frequency - 1;
-        end
-    end
-
-    // Clock divider to generate a 1 Hz pulse:
-    // This logic counts clock cycles and raises `one_sec_pulse` every one-second interval.
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
-            clk_count <= 0;
-            one_sec_pulse <= 0;
-        end else if (clk_count == one_sec_count) begin
-            clk_count <= 0;
-            one_sec_pulse <= 1;
-        end else begin
-            clk_count <= clk_count + 1;
-            one_sec_pulse <= 0;
         end
     end
 
