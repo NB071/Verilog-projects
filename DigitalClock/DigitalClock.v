@@ -56,6 +56,17 @@ module DigitalClock(
     reg [5:0] minutes = 0;  // Range: 0-59
     reg [4:0] hours = 0;    // Range: 0-23
 
+    // One-second pulse signal
+    wire one_sec_pulse;
+
+    // Instantiate ClockDivider to generate one-second pulse
+    ClockDivider clk_divider (
+        .clk(clk),
+        .reset(reset),
+        .divide_by(clock_frequency - 1),
+        .pulse_out(one_sec_pulse)                       
+    );
+
     // Initialization of `one_sec_count`:
     // This calculates the number of clock cycles required to generate a one-second pulse.
     // It assumes a constant `clock_frequency`.
@@ -106,9 +117,7 @@ module DigitalClock(
         end
     end
 
-    // BCD Output Decoding:
-    // Decodes `seconds`, `minutes`, and `hours` counters into Binary Coded Decimal (BCD) format
-    // for display purposes.
+    // BCD Output Decoding
     always @(*) begin
         sec_ones = seconds % 10;                        // 1s place of seconds
         sec_tens = seconds / 10;                        // 10s place of seconds
@@ -119,5 +128,4 @@ module DigitalClock(
         hour_ones = hours % 10;                         // 1s place of hours
         hour_tens = hours / 10;                         // 10s place of hours
     end
-
 endmodule
