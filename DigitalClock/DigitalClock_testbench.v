@@ -1,5 +1,28 @@
 `timescale 1ns / 1ps
 
+//////////////////////////////////////////////////////////////////////////////////
+// Author: Nima Bargestan
+// 
+// Create Date: 12/23/2024
+// Design Name: Digital Clock Testbench
+// Module Name: clock_testbench
+// Description: 
+//     This is the testbench for the `DigitalClock` module. It verifies the 
+//     functionality of the digital clock by providing a simulated clock signal 
+//     and observing the behavior of the clock outputs (hours, minutes, and seconds).
+//
+// Testbench Features:
+//     - Generates a 1.2 MHz clock signal with a 416 ns period.
+//     - Simulates an active-high reset condition to initialize the clock.
+//     - Monitors the clock output (`hour_tens`, `hour_ones`, `min_tens`, 
+//       `min_ones`, `sec_tens`, `sec_ones`) every second based on the 
+//       `one_sec_pulse` signal.
+//
+// Dependencies:
+//     - DigitalClock.v: The digital clock module under test (UUT).
+//
+//////////////////////////////////////////////////////////////////////////////////
+
 module clock_testbench;
     reg clk = 0;                            // Clock signal
     reg reset = 0;                          // Reset signal
@@ -41,9 +64,9 @@ module clock_testbench;
             @(posedge uut.one_sec_pulse); // Wait for one_sec_pulse signal
             $display("Time: %0t ns | Clock: %0d%0d:%0d%0d:%0d%0d",
                 $time,
-                uut.hour_tens, uut.hour_ones,
-                uut.min_tens, uut.min_ones,
-                uut.sec_tens, uut.sec_ones
+                uut.hour_tens, uut.hour_ones, // Hours in 10s and 1s place
+                uut.min_tens, uut.min_ones,  // Minutes in 10s and 1s place
+                uut.sec_tens, uut.sec_ones   // Seconds in 10s and 1s place
             );
         end
     end
