@@ -1,3 +1,25 @@
+`timescale 1ns / 1ps
+
+//////////////////////////////////////////////////////////////////////////////////
+// Author: Nima Bargestan
+// 
+// Create Date: 12/24/2024
+// Design Name: Traffic Light FSM in Verilog
+// Module Name: TrafficLightFSM
+// Description: 
+//      This module implements a Traffic Light FSM. It generates sequential light transitions 
+//      (RED, YELLOW, GREEN) based on a configurable timer. Each state duration is controlled 
+//      by the clock cycles defined for each light state. The FSM transitions states based on 
+//      the timer and reset conditions.
+// 
+// Usage:
+//     - Use this testbench to validate the TrafficLightFSM module.
+//     - Observe output waveforms or console logs for debugging and verification.
+//
+// Dependencies: None
+//
+//////////////////////////////////////////////////////////////////////////////////
+
 module TrafficLightFSM (
     input clk,                              // Clock signal
     input reset,                            // Reset signal
