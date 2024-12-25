@@ -9,15 +9,30 @@ module TrafficLightFSM (
     parameter GREEN = 3'b001;
     parameter YELLOW = 3'b010;
 
-    // Registers
-    reg [2:0] current_state, next_state;
+    // State duration parameters (in CC)
+    parameter RED_TIME = 10;
+    parameter GREEN_TIME = 10;
+    parameter YELLOW_TIME = 5;
 
-    // State transition block
+    // Registers (+ timer)
+    reg [2:0] current_state, next_state;
+    reg [3:0] timer;                         // Timer to count clock cycles for each state
+
+    // State transition block + timer
     always @(posedge clk or posedge reset) begin
-        if (reset)
+        if (reset) begin
             current_state <= RED;
-        else
+            timer <= 0;
+        end else if (timer == 0) begin
             current_state <= next_state;
+            case (next_state)
+                RED: timer <= RED_TIME;
+                GREEN: timer <= GREEN_TIME;
+                YELLOW: timer <= YELLOW_TIME;
+            endcase
+        end else begin
+            timer <= timer - 1;
+        end
     end
 
     // Next state logic
