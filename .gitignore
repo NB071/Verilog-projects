@@ -1,3 +1,5 @@
-# Ignore all .out files
+# Ignore all .out & .vcd files
 *.out
+*.vcd
 */*.out
+*/*.vcd
