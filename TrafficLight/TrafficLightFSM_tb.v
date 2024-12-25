@@ -12,13 +12,13 @@ module TrafficLightFSM_tb;
         .light(light)
     );
 
-    // Clock generation
+    // Clock generator
     initial begin
         clk = 0;
-        forever #5 clk = ~clk; // Toggle clock every 5 ns
+        forever #5 clk = ~clk; 
     end
 
-     // Test sequence
+    // Test sequence
     initial begin
         // simulation dump file 
         $dumpfile("TrafficLightFSM_tb.vcd");
@@ -35,7 +35,7 @@ module TrafficLightFSM_tb;
         $monitor("%0dns | %b     | %b", $time, reset, light);
 
         // Run for a few clock cycles
-        #100;
+        #1000;
 
         // Test with reset during operation
         $display("Applying reset during operation...");
@@ -44,10 +44,21 @@ module TrafficLightFSM_tb;
         reset = 0;
 
         // Run for a few clock cycles
-        #100;
+        #1000;
 
         // End simulation
         $display("Ending simulation.");
         $finish;
     end
+
+     // Debugging aid
+    initial begin
+        forever begin
+            #5;
+            if (light == 3'b100) $display("Time: %0dns - RED State", $time);
+            else if (light == 3'b001) $display("Time: %0dns - GREEN State", $time);
+            else if (light == 3'b010) $display("Time: %0dns - YELLOW State", $time);
+        end
+    end
+
 endmodule
