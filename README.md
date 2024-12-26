@@ -32,6 +32,18 @@ For now, this repository contains a **Digital Clock**, but I plan to add more ex
   - Converts time into Binary Coded Decimal (BCD) for display purposes.
   - Includes a testbench to verify functionality.
 
+### **2. Traffic Light** 🚦
+- **Description**: 
+  - A traffic light controller implemented as a Finite State Machine (FSM).
+  - The system transitions between RED, YELLOW, and GREEN lights based on configurable timer inputs.
+  - Designed to handle both normal and error states, with error detection for invalid timer configurations.
+- **Key Features**:
+  - Configurable timer for each light state using an 18-bit input.
+  - Supports error detection for invalid timer configurations (e.g., zero-duration states).
+  - Includes FSM pause/resume functionality based on the enable signal.
+  - Provides a testbench to simulate various scenarios, including valid and invalid configurations, light transitions, and error recovery.
+  - The FSM design ensures proper timing and smooth light transitions.
+
 ---
 
 ## File Structure
@@ -42,9 +54,13 @@ For now, this repository contains a **Digital Clock**, but I plan to add more ex
 │   ├── DigitalClock.v         # Digital clock module
 │   ├── ClockDivider.v         # Clock divider module
 │   ├── clock_testbench.v      # Testbench for verifying the digital clock
-│   └── Lessons-Learned.pdf    # Report detailing the concepts and lessons learned
+|   ├── README.md  
+├── TrafficLight/              # Directory containing Verilog files for the traffic light system
+│   ├── TrafficLightFSM.v      # Traffic light FSM module
+│   ├── TrafficLightFSM_tb.v   # Testbench for verifying the traffic light FSM functionality
+|   ├── README.md  
 ├── .gitignore                 # Git configuration to exclude unnecessary files
-├── README.md                  # Project overview and details
+├── README.md 
 ```
 
 ## Usage (ex. for DigitalClock)
@@ -69,7 +85,6 @@ vvp DigitalClock_testbench.vvp
 ---
 
 ## Future Plans
-- 🚦 Traffic Light Controller: A system with configurable timers for different lights.
 - 🧮 Digital Calculator: Exploring arithmetic logic and modular design.
 - TBD: I’m always brainstorming new ideas to expand this repository!
 
