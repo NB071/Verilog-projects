@@ -3,86 +3,122 @@
 //////////////////////////////////////////////////////////////////////////////////
 // Author: Nima Bargestan
 // 
-// Create Date: 12/23/2024
+// Create Date: 12/25/2024
 // Design Name: Traffic Light FSM Testbench in Verilog
 // Module Name: TrafficLightFSM_tb
 // Description: 
-//     This module tests the Traffic Light FSM by providing clock and reset signals
-//     and monitoring the output transitions (RED, YELLOW, GREEN). It includes
-//     features for timing verification, debugging, and reset condition testing.
+//     This testbench verifies the functionality of the Traffic Light FSM module. 
+//     It provides clock and reset signals, and stimulates the TrafficLightFSM with 
+//     various configurations of timer inputs, including both valid and invalid scenarios.
 // 
 // Usage:
-//     - Use this testbench to validate the TrafficLightFSM module functionality.
-//     - View waveforms or console logs to ensure the FSM operates as intended.
+//     - Use this testbench to validate the TrafficLightFSM module behavior.
+//     - Includes scenarios for reset, enable, invalid timer input, and light transitions.
+//     - Outputs the current state of light and error status to verify correctness.
 // 
-// Dependencies: TrafficLightFSM module
+// Dependencies:
+//     - TrafficLightFSM module
 // 
-// Additional Comments:
-//     - Ensure simulation duration is long enough to observe full state transitions.
-//     - Designed for debugging and validation of FSM designs.
 //////////////////////////////////////////////////////////////////////////////////
 
-module TrafficLightFSM_tb;
+module TrafficLightFSM_tb();
 
-    // Testbench signals
+    // Inputs
     reg clk;
     reg reset;
+    reg [17:0] timer_config;
+    reg enable;
+
+    // Outputs
     wire [2:0] light;
+    wire error_status;
+
+    // String for light state
+    reg [8*6:1] light_state;
 
     // Instantiate the TrafficLightFSM module
     TrafficLightFSM uut (
         .clk(clk),
         .reset(reset),
-        .light(light)
+        .timer_config(timer_config),
+        .enable(enable),
+        .light(light),
+        .error_status(error_status)
     );
 
-    // Clock generator
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk; 
+    // Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk; // 10 ns clock period
+
+     // Assign light state string based on light value
+    always @(light) begin
+        case (light)
+            3'b100: light_state = "RED   ";
+            3'b010: light_state = "YELLOW";
+            3'b001: light_state = "GREEN ";
+            default: light_state = "ERROR ";
+        endcase
     end
 
-    // Test sequence
+    // Test stimulus
     initial begin
-        // simulation dump file 
         $dumpfile("TrafficLightFSM_tb.vcd");
         $dumpvars(0, TrafficLightFSM_tb);
 
+        $display("\033[1;34mStarting testbench...\033[0m");
+
+        // Initialize inputs
+        reset = 0;
+        enable = 0;
+        timer_config = 18'b000001_000001_000001; // Default timer configuration
+
         // Apply reset
-        $display("Starting simulation...");
+        $display("\033[1;33mApplying reset...\033[0m");
         reset = 1;
-        #10;
+        #20;
         reset = 0;
 
-        // Light transitions
-        $display("Time(ns) | Reset | Light State");
-        $monitor("%0dns | %b     | %b", $time, reset, light);
+        // Enable the FSM and test normal operation
+        $display("\033[1;32mTesting normal operation...\033[0m");
+        enable = 1;
+        timer_config = 18'b000010_000011_000100; // RED = 2, YELLOW = 3, GREEN = 4
+        #100;
 
-        // Run for a few clock cycles
-        #1000;
+        // Test error detection
+        $display("\033[1;31mTesting error detection with invalid timer...\033[0m");
+        timer_config = 18'b000000_000011_000100; // RED = 0, YELLOW = 3, GREEN = 4 (invalid)
+        #20;
 
-        // Test with reset during operation
-        $display("Applying reset during operation...");
-        reset = 1;
-        #10;
-        reset = 0;
+        // Test recovery from error
+        $display("\033[1;36mTesting recovery from error...\033[0m");
+        timer_config = 18'b000010_000011_000100; // Valid configuration
+        #50;
 
-        // Run for a few clock cycles
-        #1000;
+        // Test pause/resume functionality
+        $display("\033[1;35mTesting pause functionality...\033[0m");
+        enable = 0; // Pause FSM
+        #50;
+        enable = 1; // Resume FSM
+        #50;
 
-        // End simulation
-        $display("Ending simulation.");
-        $finish;
+        // Test edge case with minimum valid timer configuration
+        $display("\033[1;33mTesting edge case with minimum valid timer...\033[0m");
+        timer_config = 18'b000001_000001_000001; // All states = 1
+        #50;
+
+        // Test maximum timer configuration
+        $display("\033[1;32mTesting maximum timer configuration...\033[0m");
+        timer_config = 18'b111111_111111_111111; // All states = 63
+        #100;
+
+        $display("\033[1;34mTestbench completed.\033[0m");
+        $stop;
     end
 
-     // Debugging aid
+    // Monitor outputs
     initial begin
-        forever begin
-            #5;
-            if (light == 3'b100) $display("Time: %0dns - RED State", $time);
-            else if (light == 3'b001) $display("Time: %0dns - GREEN State", $time);
-            else if (light == 3'b010) $display("Time: %0dns - YELLOW State", $time);
-        end
+        $monitor("\033[1;37mTime = %0dns | clk = %b | reset = %b | enable = %b | timer_config = %b | light = %s | error_status = %b\033[0m",
+                 $time, clk, reset, enable, timer_config, light_state, error_status);
     end
 
 endmodule
