@@ -1,8 +1,5 @@
 # Traffic Light FSM in Verilog
 
-## Author: Nima Bargestan
-## Date: 12/25/2024
-
 ### Description:
 This Verilog module implements a Traffic Light Finite State Machine (FSM) that simulates the sequencing of traffic lights (RED, YELLOW, GREEN). The FSM transitions through these states based on a configurable timer input. The timer is an 18-bit value, where each 6 bits defines the duration of each light state (RED, YELLOW, and GREEN). The FSM also includes error detection for invalid timer configurations and a pause/resume functionality for the FSM operation.
 
